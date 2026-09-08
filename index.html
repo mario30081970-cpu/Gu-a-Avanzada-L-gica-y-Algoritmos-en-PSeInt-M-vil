@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guía Avanzada · Lógica y Algoritmos en PSeInt Móvil</title>
+<style>
+  :root {
+    --bg: #0f1220;
+    --panel: #1a1f33;
+    --accent: #6d4aff;
+    --accent2: #00e08f;
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --border: #2d3550;
+    --warning: #f59e0b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    -webkit-tap-highlight-color: transparent;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overscroll-behavior-y: contain;
+    line-height: 1.5;
+  }
+  body { padding-bottom: 80px; }
+  
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: rgba(15, 18, 32, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    padding: 16px;
+  }
+  .badge {
+    display: inline-block;
+    background: rgba(109, 74, 255, 0.2);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 800;
+    padding: 4px 10px;
+    border-radius: 999px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: 1px solid rgba(109, 74, 255, 0.3);
+  }
+  header h1 {
+    font-size: 20px;
+    font-weight: 800;
+    line-height: 1.2;
+    background: linear-gradient(90deg, #fff, var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  header p {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+  
+  .warning-banner {
+    background: rgba(245, 158, 11, 0.1);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    border-left: 4px solid var(--warning);
+    padding: 12px 16px;
+    margin: 12px 16px;
+    border-radius: 8px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .warning-banner span { font-size: 20px; }
+  .warning-banner p { 
+    font-size: 13px; 
+    color: #fcd34d; 
+    line-height: 1.4;
+  }
+  .warning-banner strong { color: #fbbf24; }
+  
+  .tabs-container {
+    position: sticky;
+    top: 85px;
+    z-index: 30;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    padding: 8px 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .tabs-container::-webkit-scrollbar { display: none; }
+  .tabs-wrapper {
+    display: flex;
+    gap: 8px;
+    padding: 0 16px;
+    min-width: max-content;
+  }
+  .tab-btn {
+    padding: 10px 16px;
+    border-radius: 999px;
+    background: var(--panel);
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+  }
+  .tab-btn.active {
+    background: linear-gradient(135deg, var(--accent), #8b5cf6);
+    color: #fff;
+    border-color: transparent;
+    box-shadow: 0 4px 12px rgba(109, 74, 255, 0.4);
+  }
+  
+  main { padding: 16px; }
+  .panel { display: none; animation: fadeIn 0.3s ease; }
+  .panel.active { display: block; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .card h2 {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--accent2);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    margin: 16px 0 8px;
+  }
+  .card p, .card li {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+  .card ul {
+    padding-left: 20px;
+    margin-top: 8px;
+  }
+  .card li { margin-bottom: 6px; }
+  
+  .tip-box {
+    background: rgba(109, 74, 255, 0.1);
+    border-left: 3px solid var(--accent);
+    padding: 12px;
+    border-radius: 8px;
+    margin: 12px 0;
+  }
+  .tip-box strong {
+    color: var(--accent);
+    display: block;
+    margin-bottom: 6px;
+  }
+  
+  .code-wrapper {
+    position: relative;
+    margin-top: 12px;
+  }
+  pre.code {
+    background: #0a0c14;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    font-family: "Fira Code", "Consolas", monospace;
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--text);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: pre;
+  }
+  .kw { color: #c084fc; font-weight: 700; }
+  .str { color: var(--accent2); }
+  .num { color: #60a5fa; }
+  .com { color: #64748b; font-style: italic; }
+  .fn { color: #f472b6; font-weight: 600; }
+  
+  .btn-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 16px;
+  }
+  .btn-action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 13px;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.15s ease, opacity 0.2s ease;
+  }
+  .btn-action:active { transform: scale(0.96); opacity: 0.9; }
+  .btn-copy {
+    background: rgba(109, 74, 255, 0.15);
+    color: var(--accent);
+    border: 1px solid rgba(109, 74, 255, 0.3);
+  }
+  .btn-download {
+    background: rgba(0, 224, 143, 0.15);
+    color: var(--accent2);
+    border: 1px solid rgba(0, 224, 143, 0.3);
+  }
+  
+  .step {
+    display: flex;
+    gap: 12px;
+    padding: 12px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 12px;
+    border-left: 3px solid var(--accent);
+    margin-bottom: 10px;
+  }
+  .step-num {
+    flex-shrink: 0;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-weight: 800;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .step p { font-size: 13px; color: var(--text); margin: 0; }
+  
+  .challenge-card {
+    border: 2px solid var(--accent2);
+    background: linear-gradient(135deg, rgba(0,224,143,0.05), rgba(109,74,255,0.05));
+  }
+  
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--accent2);
+    color: #0f1220;
+    padding: 12px 20px;
+    border-radius: 999px;
+    font-weight: 800;
+    font-size: 13px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 100;
+    white-space: nowrap;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  .toast.error { background: #ef4444; color: #fff; }
+  
+  footer {
+    text-align: center;
+    padding: 20px 16px;
+    font-size: 12px;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border);
+    margin-top: 20px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="badge">Nivel Avanzado · PSeInt Flexible</div>
+  <h1> Guía Avanzada · Lógica y Algoritmos en PSeInt Móvil</h1>
+  <p>Nivel 2 — Introducción al Software</p>
+</header>
+
+<div class="warning-banner">
+  <span>📲</span>
+  <p><strong>¡Usá PSeInt Android (Flexible) para probar cada ejercicio!</strong><br>
+  Tené la app abierta en tu teléfono. Descargala desde pseint.sourceforge.net o Play Store.</p>
+</div>
+
+<nav class="tabs-container">
+  <div class="tabs-wrapper" id="tabs">
+    <button class="tab-btn active" data-tab="m1">📋 Menú</button>
+    <button class="tab-btn" data-tab="m2">📊 Matrices</button>
+    <button class="tab-btn" data-tab="m3">🔎 Búsqueda</button>
+    <button class="tab-btn" data-tab="m4">🏆 Desafío</button>
+  </div>
+</nav>
+
+<main>
+
+<!-- MÓDULO 1 -->
+<section class="panel active" id="m1">
+  <div class="card">
+    <h2>📋 Módulo 1 — Menús Interactivos con Segun</h2>
+    <p>Un menú permite al usuario elegir entre varias opciones. Se implementa con un bucle principal (normalmente <code>Repetir</code> o <code>Mientras</code>) y la estructura <code>Segun</code> para ejecutar la acción correspondiente.</p>
+    
+    <div class="tip-box">
+      <strong>💡 Estructura típica</strong>
+      <ol style="margin-left: 16px; margin-top: 6px;">
+        <li>Mostrar las opciones al usuario.</li>
+        <li>Leer la opción elegida.</li>
+        <li>Usar <code>Segun</code> para ejecutar el bloque adecuado.</li>
+        <li>Repetir hasta que el usuario elija "Salir".</li>
+      </ol>
+    </div>
+    
+    <h3>Ejercicio: Menú con opciones (Cargar, Mostrar, Salir)</h3>
+    <div class="code-wrapper">
+      <pre class="code" id="code-m1"><span class="com">// Menú interactivo con Segun</span>
+<span class="kw">Algoritmo</span> <span class="fn">MenuPrincipal</span>
+    <span class="kw">Definir</span> opcion <span class="kw">Como</span> <span class="kw">Entero</span>
+    <span class="kw">Definir</span> dato <span class="kw">Como</span> <span class="kw">Cadena</span>
+    dato &lt;- <span class="str">""</span>
+    
+    <span class="kw">Repetir</span>
+        <span class="kw">Escribir</span> <span class="str">"=== MENÚ ==="</span>
+        <span class="kw">Escribir</span> <span class="str">"1. Cargar dato"</span>
+        <span class="kw">Escribir</span> <span class="str">"2. Mostrar dato"</span>
+        <span class="kw">Escribir</span> <span class="str">"3. Salir"</span>
+        <span class="kw">Escribir</span> <span class="str">"Elija una opción:"</span>
+        <span class="kw">Leer</span> opcion
+        
+        <span class="kw">Segun</span> opcion <span class="kw">Hacer</span>
+            <span class="num">1:</span>
+                <span class="kw">Escribir</span> <span class="str">"Ingrese un dato:"</span>
+                <span class="kw">Leer</span> dato
+                <span class="kw">Escribir</span> <span class="str">"Dato cargado correctamente."</span>
+            <span class="num">2:</span>
+                <span class="kw">Si</span> dato &lt;&gt; <span class="str">""</span> <span class="kw">Entonces</span>
+                    <span class="kw">Escribir</span> <span class="str">"El dato almacenado es: "</span>, dato
+                <span class="kw">Sino</span>
+                    <span class="kw">Escribir</span> <span class="str">"No hay ningún dato cargado."</span>
+                <span class="kw">FinSi</span>
+            <span class="num">3:</span>
+                <span class="kw">Escribir</span> <span class="str">"¡Hasta luego!"</span>
+            <span class="kw">De Otro Modo:</span>
+                <span class="kw">Escribir</span> <span class="str">"Opción inválida. Reintente."</span>
+        <span class="kw">FinSegun</span>
+    <span class="kw">Hasta Que</span> opcion <span class="kw">=</span> <span class="num">3</span>
+<span class="kw">FinAlgoritmo</span></pre>
+    </div>
+    <div class="btn-group">
+      <button class="btn-action btn-copy" data-target="code-m1">📋 Copiar</button>
+      <button class="btn-action btn-download" data-target="code-m1" data-name="menu_interactivo.psc">💾 .psc</button>
+    </div>
+    <p style="margin-top: 12px; font-size: 13px; color: var(--accent2);"><strong>🔧 Probá las opciones 1, 2 y 3. El menú se repite hasta que elijas Salir.</strong></p>
+  </div>
+</section>
+
+<!-- MÓDULO 2 -->
+<section class="panel" id="m2">
+  <div class="card">
+    <h2>📊 Módulo 2 — Matrices (Arreglos Bidimensionales)</h2>
+    <p>Una matriz es un arreglo de dos dimensiones: filas y columnas. Se declara con <code>Dimension</code> indicando ambos tamaños, por ejemplo <code>Dimension tabla[4,4]</code>. Para recorrerla se usan bucles anidados: uno para las filas y otro para las columnas.</p>
+    
+    <div class="tip-box">
+      <strong>💡 Visualización</strong>
+      Imaginá una tabla con 4 filas y 4 columnas. Cada celda se accede con <code>tabla[fila, columna]</code>. Los índices comienzan en 0 (en móvil).
+    </div>
+    
+    <h3>Ejercicio: Cargar y recorrer una matriz 4×4 (base 0)</h3>
+    <div class="code-wrapper">
+      <pre class="code" id="code-m2"><span class="com">// Carga y recorrido de una matriz 4x4 (base 0)</span>
+<span class="kw">Algoritmo</span> <span class="fn">MatrizEjemplo</span>
+    <span class="kw">Definir</span> tabla <span class="kw">Como</span> <span class="kw">Entero</span>
+    <span class="kw">Definir</span> f, c <span class="kw">Como</span> <span class="kw">Entero</span>
+    <span class="kw">Dimension</span> tabla[<span class="num">4</span>,<span class="num">4</span>]
+    
+    <span class="com">// Carga de la matriz</span>
+    <span class="kw">Para</span> f &lt;- <span class="num">0</span> <span class="kw">Hasta</span> <span class="num">3</span> <span class="kw">Hacer</span>
+        <span class="kw">Para</span> c &lt;- <span class="num">0</span> <span class="kw">Hasta</span> <span class="num">3</span> <span class="kw">Hacer</span>
+            <span class="kw">Escribir</span> <span class="str">"Ingrese valor para tabla["</span>, f, <span class="str">","</span>, c, <span class="str">"]:"</span>
+            <span class="kw">Leer</span> tabla[f,c]
+        <span class="kw">FinPara</span>
+    <span class="kw">FinPara</span>
+    
+    <span class="com">// Mostrar la matriz (usando una variable para armar cada fila)</span>
+    <span class="kw">Escribir</span> <span class="str">"Contenido de la matriz:"</span>
+    <span class="kw">Para</span> f &lt;- <span class="num">0</span> <span class="kw">Hasta</span> <span class="num">3</span> <span class="kw">Hacer</span>
+        <span class="kw">Definir</span> fila <span class="kw">Como</span> <span class="kw">Cadena</span>
+        fila &lt;- <span class="str">""</span>
+        <span class="kw">Para</span> c &lt;- <span class="num">0</span> <span class="kw">Hasta</span> <span class="num">3</span> <span class="kw">Hacer</span>
+            fila &lt;- fila + <span class="str">" "</span> + <span class="fn">ConvertirATexto</span>(tabla[f,c]) + <span class="str">" "</span>
+        <span class="kw">FinPara</span>
+        <span class="kw">Escribir</span> fila
+    <span class="kw">FinPara</span>
+<span class="kw">FinAlgoritmo</span></pre>
+    </div>
+    <div class="btn-group">
+      <button class="btn-action btn-copy" data-target="code-m2">📋 Copiar</button>
+      <button class="btn-action btn-download" data-target="code-m2" data-name="matriz_ejemplo.psc"> .psc</button>
+    </div>
+    <p style="margin-top: 12px; font-size: 13px; color: var(--accent2);"><strong>🔧 Observá los bucles anidados desde 0. La salida se arma concatenando en una cadena para evitar <code>Sin Saltar</code>.</strong></p>
+  </div>
+</section>
+
+<!-- MÓDULO 3 -->
+<section class="panel" id="m3">
+  <div class="card">
+    <h2>🔎 Módulo 3 — Búsqueda Secuencial Modularizada</h2>
+    <p>La búsqueda secuencial recorre un arreglo elemento por elemento hasta encontrar el valor buscado o llegar al final. Se puede implementar en una <code>Funcion</code> que devuelva la posición encontrada o un valor especial (ej. -1) si no existe.</p>
+    
+    <div class="tip-box">
+      <strong>✅ Reglas para PSeInt móvil</strong>
+      <ul style="margin-left: 16px; margin-top: 6px;">
+        <li>Usar <code>Funcion</code>, no <code>SubProceso</code>.</li>
+        <li>La variable de retorno se asigna directamente; no usar <code>Retornar</code>.</li>
+        <li>Los índices de los arreglos comienzan en 0.</li>
+        <li><strong>NO declarar el parámetro vector dentro de la función</strong>.</li>
+      </ul>
+    </div>
+    
+    <h3>Ejercicio: Buscar un valor en un vector (base 0)</h3>
+    <div class="code-wrapper">
+      <pre class="code" id="code-m3"><span class="com">// Búsqueda secuencial en un vector (base 0)</span>
+<span class="kw">Funcion</span> pos &lt;- <span class="fn">BuscarValor</span>(vector, n, buscado)
+    <span class="kw">Definir</span> i <span class="kw">Como</span> <span class="kw">Entero</span>
+    pos &lt;- <span class="num">-1</span>   <span class="com">// -1 indica "no encontrado"</span>
+    <span class="kw">Para</span> i &lt;- <span class="num">0</span> <span class="kw">Hasta</span> n-<span class="num">1</span> <span class="kw">Hacer</span>
+        <span class="kw">Si</span> vector[i] <span class="kw">=</span> buscado <span class="kw">Entonces</span>
+            pos &lt;- i
+            i &lt;- n   <span class="com">// Salir del bucle</span>
+        <span class="kw">FinSi</span>
+    <span class="kw">FinPara</span>
+    <span class="com">// 'pos' contiene la posición o -1, se devuelve automáticamente</span>
+<span class="kw">FinFuncion</span>
+
+<span class="kw">Algoritmo</span> <span class="fn">PruebaBusqueda</span>
+    <span class="kw">Definir</span> datos <span class="kw">Como</span> <span class="kw">Entero</span>
+    <span class="kw">Definir</span> i, valor, resultado <span class="kw">Como</span> <span class="kw">Entero</span>
+    <span class="kw">Dimension</span> datos[<span class="num">5</span>]   <span class="com">// índices 0 a 4</span>
+    
+    <span class="com">// Cargar el vector</span>
+    <span class="kw">Para</span> i &lt;- <span class="num">0</span> <span class="kw">Hasta</span> <span class="num">4</span> <span class="kw">Hacer</span>
+        <span class="kw">Escribir</span> <span class="str">"Ingrese dato "</span>, i+<span class="num">1</span>, <span class="str">":"</span>
+        <span class="kw">Leer</span> datos[i]
+    <span class="kw">FinPara</span>
+    
+    <span class="kw">Escribir</span> <span class="str">"Ingrese el valor a buscar:"</span>
+    <span class="kw">Leer</span> valor
+    
+    resultado &lt;- <span class="fn">BuscarValor</span>(datos, <span class="num">5</span>, valor)
+    <span class="kw">Si</span> resultado &lt;&gt; <span class="num">-1</span> <span class="kw">Entonces</span>
+        <span class="kw">Escribir</span> <span class="str">"El valor "</span>, valor, <span class="str">" se encuentra en la posición "</span>, resultado
+    <span class="kw">Sino</span>
+        <span class="kw">Escribir</span> <span class="str">"Valor no encontrado."</span>
+    <span class="kw">FinSi</span>
+<span class="kw">FinAlgoritmo</span></pre>
+    </div>
+    <div class="btn-group">
+      <button class="btn-action btn-copy" data-target="code-m3">📋 Copiar</button>
+      <button class="btn-action btn-download" data-target="code-m3" data-name="busqueda_vector.psc">💾 .psc</button>
+    </div>
+    <p style="margin-top: 12px; font-size: 13px; color: var(--accent2);"><strong> La función devuelve la posición (0..n-1) o -1. Todo con base 0.</strong></p>
+  </div>
+</section>
+
+<!-- MÓDULO 4: DESAFÍO -->
+<section class="panel" id="m4">
+  <div class="card challenge-card">
+    <h2> DESAFÍO INTEGRADOR Nivel 2</h2>
+    <h3 style="color: var(--accent2); margin-top: 8px;">Sistema de Control de Stock y Ventas</h3>
+    <p>Una tienda necesita un programa que administre el stock de <strong>3 productos</strong> en <strong>4 sucursales</strong>. Cada sucursal tiene una cantidad de cada producto. El sistema debe permitir:</p>
+    <ol style="margin: 12px 0 12px 20px; line-height: 1.8;">
+      <li>Cargar el stock inicial (matriz de 4×3).</li>
+      <li>Vender un producto en una sucursal (restar cantidad, validando que haya stock suficiente).</li>
+      <li>Reponer stock (sumar cantidad).</li>
+      <li>Mostrar el stock completo (tabla).</li>
+      <li>Buscar un producto en todas las sucursales (usar la función de búsqueda).</li>
+      <li>Salir del programa.</li>
+    </ol>
+  </div>
+  
+  <div class="card">
+    <h3>📋 Requisitos técnicos (base 0)</h3>
+    <ul>
+      <li>Usar <code>Funcion</code> para las operaciones.</li>
+      <li>Menú principal con <code>Segun</code>.</li>
+      <li>Matriz de <code>Dimension stock[4,3]</code> (4 sucursales, 3 productos) con índices 0..3 y 0..2.</li>
+      <li>Función <code>BuscarProducto(stock, producto)</code> que devuelva la sucursal con mayor cantidad (o -1 si no hay).</li>
+      <li>Validar que las cantidades no sean negativas al vender.</li>
+    </ul>
+  </div>
+  
+  <div class="card challenge-card">
+    <h3>📤 Entregable</h3>
+    <div class="step">
+      <div class="step-num">1</div>
+      <p>Escribí tu solución en <strong>PSeInt Android</strong>.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <p>Probá todas las opciones del menú.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <p>Guardá el archivo <code>.psc</code> o tomá captura de la ejecución.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <p>Subilo a <strong>Google Classroom</strong> en la tarea "Desafío Integrador Nivel 2".</p>
+    </div>
+    <p style="margin-top: 12px; padding: 10px; background: rgba(245, 158, 11, 0.1); border-radius: 8px; font-size: 13px;"><strong>⚠️ Importante:</strong> el desafío integra menú, matrices y funciones. Si algo falla, revisá la teoría de los módulos anteriores.</p>
+  </div>
+  
+  <div class="card">
+    <h3> Plantilla de ayuda (punto de partida)</h3>
+    <div class="code-wrapper">
+      <pre class="code" id="code-m4"><span class="com">// DESAFIO NIVEL 2 - Control de Stock y Ventas (base 0)</span>
+<span class="com">// Completa las partes con TODO</span>
+
+<span class="kw">Funcion</span> pos &lt;- <span class="fn">BuscarProducto</span>(stock, producto)
+    <span class="com">// Busca la sucursal con mayor stock del producto (0..3)</span>
+    <span class="kw">Definir</span> s, mayor, posmayor <span class="kw">Como</span> <span class="kw">Entero</span>
+    mayor &lt;- <span class="num">-1</span>
+    posmayor &lt;- <span class="num">-1</span>
+    <span class="kw">Para</span> s &lt;- <span class="num">0</span> <span class="kw">Hasta</span> <span class="num">3</span> <span class="kw">Hacer</span>
+        <span class="kw">Si</span> stock[s, producto] &gt; mayor <span class="kw">Entonces</span>
+            mayor &lt;- stock[s, producto]
+            posmayor &lt;- s
+        <span class="kw">FinSi</span>
+    <span class="kw">FinPara</span>
+    pos &lt;- posmayor
+    <span class="kw">Si</span> mayor <span class="kw">=</span> <span class="num">0</span> <span class="kw">Entonces</span>
+        pos &lt;- <span class="num">-1</span>
+    <span class="kw">FinSi</span>
+<span class="kw">FinFuncion</span>
+
+<span class="kw">Funcion</span> ok &lt;- <span class="fn">VenderProducto</span>(stock, sucursal, producto, cantidad)
+    <span class="kw">Definir</span> ok <span class="kw">Como</span> <span class="kw">Logico</span>
+    ok &lt;- <span class="kw">Falso</span>
+    <span class="kw">Si</span> stock[sucursal, producto] &gt;= cantidad <span class="kw">Entonces</span>
+        stock[sucursal, producto] &lt;- stock[sucursal, producto] - cantidad
+        ok &lt;- <span class="kw">Verdadero</span>
+    <span class="kw">FinSi</span>
+    <span class="com">// 'ok' se devuelve automáticamente</span>
+<span class="kw">FinFuncion</span>
+
+<span class="kw">Algoritmo</span> <span class="fn">SistemaStock</span>
+    <span class="kw">Definir</span> stock <span class="kw">Como</span> <span class="kw">Entero</span>
+    <span class="kw">Definir</span> opcion, s, p, cantidad, prodBuscado <span class="kw">Como</span> <span class="kw">Entero</span>
+    <span class="kw">Definir</span> sucursal, producto <span class="kw">Como</span> <span class="kw">Entero</span>
+    <span class="kw">Dimension</span> stock[<span class="num">4</span>,<span class="num">3</span>]   <span class="com">// 4 sucursales (0..3), 3 productos (0..2)</span>
+    
+    <span class="com">// Inicializar stock en 0</span>
+    <span class="kw">Para</span> s &lt;- <span class="num">0</span> <span class="kw">Hasta</span> <span class="num">3</span> <span class="kw">Hacer</span>
+        <span class="kw">Para</span> p &lt;- <span class="num">0</span> <span class="kw">Hasta</span> <span class="num">2</span> <span class="kw">Hacer</span>
+            stock[s,p] &lt;- <span class="num">0</span>
+        <span class="kw">FinPara</span>
+    <span class="kw">FinPara</span>
+    
+    <span class="kw">Repetir</span>
+        <span class="kw">Escribir</span> <span class="str">"==== MENÚ PRINCIPAL ===="</span>
+        <span class="kw">Escribir</span> <span class="str">"1. Cargar stock inicial"</span>
+        <span class="kw">Escribir</span> <span class="str">"2. Vender producto"</span>
+        <span class="kw">Escribir</span> <span class="str">"3. Reponer stock"</span>
+        <span class="kw">Escribir</span> <span class="str">"4. Mostrar stock"</span>
+        <span class="kw">Escribir</span> <span class="str">"5. Buscar producto"</span>
+        <span class="kw">Escribir</span> <span class="str">"6. Salir"</span>
+        <span class="kw">Escribir</span> <span class="str">"Elija opción:"</span>
+        <span class="kw">Leer</span> opcion
+        
+        <span class="kw">Segun</span> opcion <span class="kw">Hacer</span>
+            <span class="num">1:</span>
+                <span class="com">// TODO: cargar stock para cada sucursal y producto</span>
+                <span class="kw">Escribir</span> <span class="str">"Cargando stock..."</span>
+            <span class="num">2:</span>
+                <span class="com">// TODO: pedir sucursal, producto, cantidad y llamar a VenderProducto</span>
+            <span class="num">3:</span>
+                <span class="com">// TODO: reponer stock (sumar cantidad)</span>
+            <span class="num">4:</span>
+                <span class="com">// TODO: mostrar tabla de stock</span>
+            <span class="num">5:</span>
+                <span class="com">// TODO: pedir producto y mostrar la sucursal con mayor stock</span>
+            <span class="num">6:</span>
+                <span class="kw">Escribir</span> <span class="str">"Saliendo del sistema..."</span>
+            <span class="kw">De Otro Modo:</span>
+                <span class="kw">Escribir</span> <span class="str">"Opción inválida."</span>
+        <span class="kw">FinSegun</span>
+    <span class="kw">Hasta Que</span> opcion <span class="kw">=</span> <span class="num">6</span>
+<span class="kw">FinAlgoritmo</span></pre>
+    </div>
+    <div class="btn-group">
+      <button class="btn-action btn-copy" data-target="code-m4">📋 Copiar</button>
+      <button class="btn-action btn-download" data-target="code-m4" data-name="desafio_stock.psc">💾 .psc</button>
+    </div>
+    <p style="margin-top: 12px; font-size: 13px; color: var(--text-muted);"><strong>💡 Completá los TODO para que el sistema funcione. La plantilla ya incluye las funciones de búsqueda y venta con sintaxis correcta para móvil (base 0, sin Retornar).</strong></p>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p>SIMULADOR EDUCATIVO · PSeInt Móvil · Guía Nivel 2</p>
+</footer>
+
+<div class="toast" id="toast">✔ Copiado al portapapeles</div>
+
+<script>
+  // ===== CAMBIO DE PESTAÑAS =====
+  const tabs = document.querySelectorAll('.tab-btn');
+  const panels = document.querySelectorAll('.panel');
+  
+  tabs.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabs.forEach(b => b.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.tab).classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  // ===== OBTENER TEXTO PLANO DEL CÓDIGO =====
+  function getPlainText(id) {
+    const el = document.getElementById(id);
+    const clone = el.cloneNode(true);
+    clone.querySelectorAll('br').forEach(br => br.replaceWith('\n'));
+    clone.querySelectorAll('div').forEach(d => d.prepend('\n'));
+    return clone.textContent.replace(/\n{3,}/g, '\n\n').trim();
+  }
+
+  // ===== TOAST =====
+  const toast = document.getElementById('toast');
+  let toastTimer;
+  function showToast(msg, isError = false) {
+    toast.textContent = msg;
+    toast.classList.toggle('error', isError);
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 2500);
+  }
+
+  // ===== COPIAR AL PORTAPAPELES =====
+  document.querySelectorAll('.btn-copy').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const text = getPlainText(btn.dataset.target);
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(text);
+        } else {
+          const ta = document.createElement('textarea');
+          ta.value = text;
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          ta.style.left = '-9999px';
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+        }
+        showToast('✔ Copiado al portapapeles');
+      } catch (e) {
+        showToast('❌ No se pudo copiar', true);
+      }
+    });
+  });
+
+  // ===== DESCARGAR .psc =====
+  document.querySelectorAll('.btn-download').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const text = getPlainText(btn.dataset.target);
+      const name = btn.dataset.name || 'algoritmo.psc';
+      
+      const BOM = '\uFEFF';
+      const blob = new Blob([BOM + text], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = name;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('⬇️ Archivo ' + name + ' descargado');
+    });
+  });
+</script>
+
+</body>
+</html>
